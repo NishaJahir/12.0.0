@@ -22,9 +22,9 @@ use Novalnet\Services\PaymentService;
 use Novalnet\Constants\NovalnetConstants;
 
 /**
- * Class CaptureVoidEventProcedure
+ * Class CaptureEventProcedure
  */
-class CaptureVoidEventProcedure
+class CaptureEventProcedure
 {
     /**
      * @var PaymentHelper
