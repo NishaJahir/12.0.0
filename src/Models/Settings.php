@@ -54,7 +54,6 @@ class Settings extends Model
      * 
      * @param array $data
      * 
-     * @return array
      */
     public function create($data)
     {
@@ -82,7 +81,6 @@ class Settings extends Model
      * 
      * @param array $data
      * 
-     * @return array
      */
     public function update($data)
     {
@@ -180,7 +178,6 @@ class Settings extends Model
     /**
      * Save the configuration values into settings table
      * 
-     * @return array
      */
     public function save()
     {
