@@ -60,6 +60,6 @@ class NovalnetGooglePayButtonDataProvider
         $clientkey = trim($settingsService->getNnPaymentSettingsValue('novalnet_client_key'));
         
         // Render the Google Pay button
-       return $twig->render('Novalnet::NovalnetGooglePayButton', ['clientKey' => $clientkey, 'countryCode' => 'DE', 'orderTotalAmount' => $orderAmount, 'orderLang' => $orderLang, 'orderCurrency' => $basket->currency, 'nnPaymentProcessUrl' => $paymentService->getProcessPaymentUrl()]);
+       return $twig->render('Novalnet::PaymentForm.NovalnetGooglePayButton', ['clientKey' => $clientkey, 'countryCode' => 'DE', 'orderTotalAmount' => $orderAmount, 'orderLang' => $orderLang, 'orderCurrency' => $basket->currency, 'nnPaymentProcessUrl' => $paymentService->getProcessPaymentUrl()]);
     }
 }
