@@ -72,6 +72,7 @@ class NovalnetAssistant extends WizardProvider
             "shortDescription" => 'NovalnetAssistant.novalnetAssistantShortDescription',
             "iconPath" => $this->getIcon(),
             "settingsHandlerClass" => NovalnetAssistantSettingsHandler::class,
+            //"dataSource" => NovalnetAssistantDataSource::class,
             "translationNamespace" => 'Novalnet',
             "key" => 'payment-novalnet-assistant',
             "topics" => ['payment'],
@@ -95,6 +96,7 @@ class NovalnetAssistant extends WizardProvider
         $config = $this->createWebhookConfiguration($config);
         $config = $this->createPaymentMethodConfiguration($config);
         
+
         return $config;
     }
  
@@ -119,8 +121,6 @@ class NovalnetAssistant extends WizardProvider
     }
  
     /**
-     * Get the shop list
-     * 
      * @return array
      */
     private function getWebstoreListForm()
@@ -279,58 +279,21 @@ class NovalnetAssistant extends WizardProvider
                  ]
           ];
           
-        $config = $this->CreateOptionalPaymentDisplayConfiguration($config, $paymentMethodKey);
+       $config = $this->CreateOptionalPaymentDisplayConfiguration($config, $paymentMethodKey);
         }
-        // Load the Novalnet SEPA payment configuration
-        $config = $this->createNovalnetSepaPaymentConfiguration($config);
+        
         // Load the Novalnet Credit card payment configuration
         $config = $this->createNovalnetCcPaymentConfiguration($config);
         // Load the Novalnet Invoice payment configuration
         $config = $this->createNovalnetInvoicePaymentConfiguration($config);
-        // Load the Novalnet Prepayment payment configuration
-        $config = $this->createNovalnetPrepaymentPaymentConfiguration($config);
-         // Load the Novalnet Cashpayment payment configuration
-        $config = $this->createNovalnetCashpaymentPaymentConfiguration($config);
         // Load the Novalnet On Hold configuration for redirection payments
         $config = $this->createOnHoldConfigurationRedirection($config);
         // Load the Novalnet Guaranteed payments configuration
-        $config = $this->createGuaranteedPaymentConfiguration($config);
-        
+	$config = $this->createGuaranteedPaymentConfiguration($config);
+	    
         return $config;
     }
     
-    /**
-    * Create due date configuration for SEPA payments
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
-    public function createNovalnetSepaPaymentConfiguration($config)
-    {
-        $sepaPayments = ['novalnetSepa', 'novalnetGuaranteedSepa'];
-        foreach($sepaPayments as $sepaPayment) {
-            $config['steps'][$sepaPayment]['sections'][]['form'] = [
-                $sepaPayments. 'Duedate' => [
-                   'type' => 'text',
-                   'options' => [
-                       'name' => 'NovalnetAssistant.novalnetSepaDueDateLabel',
-                       'tooltip' => 'NovalnetAssistant.novalnetSepaDueDateTooltip'
-                   ]
-                   ]
-            ];
-        }
-        
-        return $config;
-    }
-    
-    /**
-    * Create configuration for CC payments
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
     public function createNovalnetCcPaymentConfiguration($config)
     {
         $config['steps']['novalnetCc']['sections'][]['form'] = [
@@ -380,86 +343,29 @@ class NovalnetAssistant extends WizardProvider
                        ]
         ];
         
-        $config = $this->createOnHoldConfiguration($config, 'novalnetCc');
+    $config = $this->createOnHoldConfiguration($config, 'novalnetCc');
         
         return $config;
     }
     
-    /**
-    * Create due date configuration for Invoice payment
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
     public function createNovalnetInvoicePaymentConfiguration($config)
     {
-        $config['steps']['novalnetInvoice']['sections'][]['form'] = [
-            'novalnetInvoiceDuedate' => [
-               'type' => 'text',
-               'options' => [
-                   'name' => 'NovalnetAssistant.novalnetInvoiceDuedateLabel',
-                   'tooltip' => 'NovalnetAssistant.novalnetInvoiceDuedateTooltip'
-               ]
-               ]
-            
-        ];
+    $config['steps']['novalnetInvoice']['sections'][]['form'] = [
+        'novalnetInvoiceDuedate' => [
+           'type' => 'text',
+           'options' => [
+               'name' => 'NovalnetAssistant.novalnetInvoiceDuedateLabel',
+               'tooltip' => 'NovalnetAssistant.novalnetInvoiceDuedateTooltip'
+           ]
+           ]
+        
+    ];
        $config = $this->createOnHoldConfiguration($config, 'novalnetInvoice');
         
-        return $config;
+    return $config;
+        
     }
     
-    /**
-    * Create due date configuration for Prepayment payment
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
-    public function createNovalnetPrepaymentPaymentConfiguration($config)
-    {
-        $config['steps']['novalnetPrepayment']['sections'][]['form'] = [
-            'novalnetPrepaymentDuedate' => [
-               'type' => 'text',
-               'options' => [
-                   'name' => 'NovalnetAssistant.novalnetPrepaymentDuedateLabel',
-                   'tooltip' => 'NovalnetAssistant.novalnetPrepaymentDuedateTooltip'
-               ]
-            ]
-        ];
-
-        return $config;
-    }
-    
-    /**
-    * Create Slip expiry configuration for Cashpayment payment
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
-    public function createNovalnetCashpaymentPaymentConfiguration($config)
-    {
-        $config['steps']['novalnetCashpayment']['sections'][]['form'] = [
-            'novalnetCashpaymentDuedate' => [
-               'type' => 'text',
-               'options' => [
-                   'name' => 'NovalnetAssistant.novalnetCashpaymentDuedateLabel',
-                   'tooltip' => 'NovalnetAssistant.novalnetCashpaymentDuedateTooltip'
-               ]
-            ]
-        ];
-
-        return $config;
-    }
-    
-    /**
-    * Create payment authorize configuration for payments
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
     public function createOnHoldConfiguration($config, $paymentMethodKey) {
        $config['steps'][$paymentMethodKey]['sections'][]['form'] = [
            $paymentMethodKey. 'PaymentAction' => [
@@ -489,34 +395,21 @@ class NovalnetAssistant extends WizardProvider
         ];
      
         return $config;
+     
     }
     
-    /**
-    * Create the configuration for CC allowed card types
-    * 
-    * @param array $config
-    * 
-    * @return none
-    */
     public function getAllowedCreditCardTypes()
     {
         $cardTypes = ['Visa', 'MasterCard', 'AmericanExpress' , 'Mastero', 'Cartesi', 'UnionPay', 'Discover', 'DinersClub', 'Jcb', 'CarteBleue'];
         $allowedCreditCardTypes = [];
-        foreach($cardTypes as $cardTypeIndex => $cardType) {
-                $allowedCreditCardTypes[] = [
-                'caption' => 'NovalnetAssistant.novalnetCc'. $cardType .'Label',
-                'value' => $cardType
-                ];
+    foreach($cardTypes as $cardTypeIndex => $cardType) {
+            $allowedCreditCardTypes[] = [
+            'caption' => 'NovalnetAssistant.novalnetCc'. $cardType .'Label',
+            'value' => $cardType
+            ];
         }
     }
     
-    /**
-    * Create payment display additional configuration for Minium amount, Maximum amount and allowed countries
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
     public function CreateOptionalPaymentDisplayConfiguration($config, $paymentMethodKey)
     {
         $config['steps'][$paymentMethodKey]['sections'][]['form'] = [
@@ -544,57 +437,43 @@ class NovalnetAssistant extends WizardProvider
         return $config;
     }
     
-    /**
-    * Create payment authorize configuration for redirection payments
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
     public function createOnHoldConfigurationRedirection($config)
     {
-         $onHoldSupportedRedirectionPayments = ['novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay'];   
-         foreach($onHoldSupportedRedirectionPayments as $onHoldSupportedRedirectionPayment) {
-        $config = $this->createOnHoldConfiguration($config, $onHoldSupportedRedirectionPayment);
-         }
-         return $config;
+	     $onHoldSupportedRedirectionPayments = ['novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay'];   
+	     foreach($onHoldSupportedRedirectionPayments as $onHoldSupportedRedirectionPayment) {
+		$config = $this->createOnHoldConfiguration($config, $onHoldSupportedRedirectionPayment);
+	     }
+	     return $config;
     }
-    
-    /**
-    * Create Guaranteed payment configuration
-    * 
-    * @param array $config
-    * 
-    * @return array
-    */
+     
     public function createGuaranteedPaymentConfiguration($config)
     {
-        $nnGuaranteedPayments = ['novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa'];
-        foreach($nnGuaranteedPayments as $nnGuaranteedPayment) {
-            $config['steps'][$nnGuaranteedPayment]['sections'][]['form'] = [
-                $nnGuaranteedPayment. 'force' => [
-                   'type' => 'checkbox',
-                   'options' => [
-                       'name' => 'NovalnetAssistant.novalnetGuaranteedForceLabel'
-                   ]
-                ],
-                $nnGuaranteedPayment. 'allowB2bCustomer' => [
-                   'type' => 'checkbox',
-                   'options' => [
-                       'name' => 'NovalnetAssistant.novalnetAllowB2bCustomerLabel'
-                   ]
-                ],
-                $nnGuaranteedPayment. 'minimumGuaranteedAmount' => [
-                   'type' => 'text',
-                   'options' => [
-                       'name' => 'NovalnetAssistant.novalnetGuaranteedMinimumAmountLabel',
-                       'pattern'  => '^[1-9]\d*$'
-                   ]
-                ]
-            ];
-          $config = $this->createOnHoldConfiguration($config, $nnGuaranteedPayment);
-        }
-        
-        return $config;
+	$nnGuaranteedPayments = ['novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa'];
+	foreach($nnGuaranteedPayments as $nnGuaranteedPayment) {
+		$config['steps'][$nnGuaranteedPayment]['sections'][]['form'] = [
+			$nnGuaranteedPayment. 'force' => [
+			   'type' => 'checkbox',
+			   'options' => [
+				   'name' => 'NovalnetAssistant.novalnetGuaranteedForceLabel'
+			   ]
+			],
+			$nnGuaranteedPayment. 'allowB2bCustomer' => [
+			   'type' => 'checkbox',
+			   'options' => [
+				   'name' => 'NovalnetAssistant.novalnetAllowB2bCustomerLabel'
+			   ]
+			],
+			$nnGuaranteedPayment. 'minimumGuaranteedAmount' => [
+			   'type' => 'text',
+			   'options' => [
+				   'name' => 'NovalnetAssistant.novalnetGuaranteedMinimumAmountLabel',
+				   'pattern'  => '^[1-9]\d*$'
+			   ]
+			]
+		];
+	  $config = $this->createOnHoldConfiguration($config, $nnGuaranteedPayment);
+	}
+	    
+	return $config;
     }
 }
