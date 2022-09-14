@@ -118,7 +118,7 @@ class NovalnetServiceProvider extends ServiceProvider
                                               PaymentHelper $paymentHelper,
                                               PaymentService $paymentService,
                                               FrontendSessionStorageFactoryContract $sessionStorage,
-                          Twig $twig
+                                             Twig $twig
                                               )
     {
         // Listen for the event that gets the payment method content
@@ -218,7 +218,7 @@ class NovalnetServiceProvider extends ServiceProvider
     /**
      * Register the Novalnet events
      *
-     * @param PaymentMethodContainer $eventProceduresService
+     * @param EventProceduresService $eventProceduresService
      */
     protected function registerEvents(EventProceduresService $eventProceduresService)
     {
